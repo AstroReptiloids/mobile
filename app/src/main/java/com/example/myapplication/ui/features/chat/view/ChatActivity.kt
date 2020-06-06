@@ -30,7 +30,8 @@ import com.scaledrone.lib.Scaledrone
 import java.util.*
 
 
-class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(), RoomListener {
+class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(),
+    RoomListener {
 
     private val channelID = "ioncKdqaLM7SSfrA"
     private val roomName = "observable-room"
@@ -44,7 +45,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         messageAdapter = MessageAdapter(this)
         binding.messagesView.adapter = messageAdapter
 
-        val data = MemberData(getRandomName(), getRandomName(),getRandomColor())
+        val data = MemberData(getRandomName(), getRandomName(), getRandomColor())
         scaledrone = Scaledrone(channelID, data)
         scaledrone?.connect(object : Listener {
             override fun onOpen() {
@@ -66,24 +67,63 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         })
 
 
-        val message = Message("receivedMessage?.data?", MemberData(getRandomName(), getRandomSurname(),getRandomColor()), false)
+        initTestMessage()
+    }
+
+    private fun initTestMessage() {
+        val message = Message(
+            "А какими средствами общения вы пользуетесь?",
+            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+            isBelongsToCurrentUser = false,
+            isChat = true
+        )
         runOnUiThread {
             messageAdapter?.add(message)
             binding.messagesView.setSelection(binding.messagesView.count - 1)
         }
 
-        val message1 = Message("received?", MemberData(getRandomName(), getRandomSurname(),getRandomColor()), true)
+        val message1 = Message(
+            "Zoom, Telegram",
+            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+            true,
+            isChat = false
+        )
         runOnUiThread {
             messageAdapter?.add(message1)
+            binding.messagesView.setSelection(binding.messagesView.count - 1)
+        }
+
+        val message3 = Message(
+            "А у меня стартап на 5000 пользователей. Го ко мне",
+            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+            isBelongsToCurrentUser = false,
+            isChat = true
+        )
+        message3.fireCount=3
+        message3.forkCount=2
+        message3.peoplesCount = 50
+        runOnUiThread {
+            messageAdapter?.add(message3)
             binding.messagesView.setSelection(binding.messagesView.count - 1)
         }
     }
 
     fun sendMessage(view: View?) {
-        val message: String = binding.editText.text.toString()
-        if (message.isNotEmpty()) {
-            scaledrone?.publish(roomName, message)
-            presenter.sendMessage(message)
+        val messageText: String = binding.editText.text.toString()
+        if (messageText.isNotEmpty()) {
+            presenter.sendMessage(messageText)
+
+            val message = Message(
+                messageText,
+                MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+                isBelongsToCurrentUser = true,
+                isChat = false
+            )
+            runOnUiThread {
+                messageAdapter?.add(message)
+                binding.messagesView.setSelection(binding.messagesView.count - 1)
+            }
+
             binding.editText.text.clear()
         }
     }
@@ -264,17 +304,13 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
     }
 
     override fun onMessage(room: Room?, receivedMessage: com.scaledrone.lib.Message?) {
-        val mapper = ObjectMapper()
         try {
-
-//            val data = mapper.treeToValue(
-//                receivedMessage?.member?.clientData,
-//                MemberData::class.java
-//            )
-//            val belongsToCurrentUser =
-//                receivedMessage?.clientID == scaledrone?.clientID
-
-            val message = Message(receivedMessage?.data?.toString()!!, MemberData(getRandomName(), getRandomSurname(),getRandomColor()), false)
+            val message = Message(
+                receivedMessage?.data?.toString()!!,
+                MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+                isBelongsToCurrentUser = false,
+                isChat = true
+            )
             runOnUiThread {
                 messageAdapter?.add(message)
                 binding.messagesView.setSelection(binding.messagesView.count - 1)

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,7 +106,7 @@ public class MessageAdapter extends BaseAdapter {
         convertView.setOnClickListener(v -> {
 
             AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-            builder1.setMessage("Хотите создать диалг на эту тему?");
+            builder1.setMessage("Хотите создать обсуждение на эту тему?");
             builder1.setCancelable(true);
 
             builder1.setPositiveButton(
@@ -124,7 +125,26 @@ public class MessageAdapter extends BaseAdapter {
 
         });
 
+        holder.chatInfoBlock = convertView.findViewById(R.id.chat_info_block);
+        holder.fireCount = convertView.findViewById(R.id.fire_count);
+        holder.peoplesCount = convertView.findViewById(R.id.peoples_count);
+        holder.forkCount = convertView.findViewById(R.id.fork_count);
+
+        if(message.isChat()) {
+            holder.chatInfoBlock.setVisibility(View.VISIBLE);
+
+            initChatBlock(holder, message);
+        }else {
+            holder.chatInfoBlock.setVisibility(View.GONE);
+        }
+
         return convertView;
+    }
+
+    private void initChatBlock(MessageViewHolder holder, Message message) {
+        holder.fireCount.setText(String.valueOf(message.getFireCount()));
+        holder.peoplesCount.setText(String.valueOf(message.getPeoplesCount()));
+        holder.forkCount.setText(String.valueOf(message.getForkCount()));
     }
 
     public static int dpToPx(int dp) {
@@ -141,4 +161,9 @@ class MessageViewHolder {
     public ImageView avatar;
     public TextView name;
     public TextView messageBody;
+    public LinearLayout chatInfoBlock;
+
+    public TextView fireCount;
+    public TextView peoplesCount;
+    public TextView forkCount;
 }
