@@ -6,5 +6,10 @@
     <string name="login_button_text">Войти</string>
     <string name="auth_error_text">Не удалось авторизоваться</string>
 
+    <string name="scheduling_button_text">Расписание (в разработке)</string>
+    <string name="speeches_button_text">Доклады (в разработке)</string>
+    <string name="chat_map_button_text">Карта чатов</string>
+    <string name="partners_button_text">Партнеры (в разработке)</string>
+
 
 </resources>

@@ -7,8 +7,7 @@ import dagger.Component
 
 @PerActivity
 @Component(
-    dependencies = [ApplicationComponent::class],
-    modules = [MenuActivityModule::class]
+    dependencies = [ApplicationComponent::class]
 )
 interface MenuActivityComponent {
 

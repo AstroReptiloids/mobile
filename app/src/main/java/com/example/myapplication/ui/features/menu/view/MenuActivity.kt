@@ -1,14 +1,17 @@
 package com.example.myapplication.ui.features.menu.view
 
+import android.os.Bundle
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMenuBinding
-import com.example.myapplication.ui.base.activity.BaseMvpActivity
+import com.example.myapplication.ui.base.activity.BaseActivity
 import com.example.myapplication.ui.features.menu.di.DaggerMenuActivityComponent
-import com.example.myapplication.ui.features.menu.di.MenuActivityModule
-import com.example.myapplication.ui.features.menu.presenter.IMenuActivityPresenter
 
-class MenuActivity : BaseMvpActivity<ActivityMenuBinding, IMenuView, IMenuActivityPresenter>(),
-    IMenuView {
+class MenuActivity : BaseActivity<ActivityMenuBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.chatMapButton.setOnClickListener { router.navigateChatMap(this) }
+    }
 
     override val layoutResId: Int
         get() = R.layout.activity_menu
@@ -16,14 +19,7 @@ class MenuActivity : BaseMvpActivity<ActivityMenuBinding, IMenuView, IMenuActivi
     override fun injectDependencies() {
         DaggerMenuActivityComponent.builder()
             .applicationComponent(applicationComponent)
-            .menuActivityModule(MenuActivityModule())
             .build()
             .inject(this)
-    }
-
-    override fun hideProgress() {
-    }
-
-    override fun showProgress() {
     }
 }
