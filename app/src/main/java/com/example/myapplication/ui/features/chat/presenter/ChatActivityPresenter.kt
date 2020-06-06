@@ -7,4 +7,12 @@ class ChatActivityPresenter @Inject constructor(
     private val repository: IRepository
 ) : IChatActivityPresenter() {
 
+
+    override fun sendMessage(text: String) {
+
+    }
+
+    fun createChat() {
+
+    }
 }
