@@ -40,12 +40,11 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("wtf", "khgvjh")
 
         messageAdapter = MessageAdapter(this)
         binding.messagesView.adapter = messageAdapter
 
-        val data = MemberData(getRandomName(), getRandomColor())
+        val data = MemberData(getRandomName(), getRandomName(),getRandomColor())
         scaledrone = Scaledrone(channelID, data)
         scaledrone?.connect(object : Listener {
             override fun onOpen() {
@@ -73,6 +72,76 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
             scaledrone?.publish(roomName, message)
             binding.editText.text.clear()
         }
+    }
+
+    private fun getRandomSurname(): String? {
+        val nouns = arrayOf(
+            "waterfall",
+            "river",
+            "breeze",
+            "moon",
+            "rain",
+            "wind",
+            "sea",
+            "morning",
+            "snow",
+            "lake",
+            "sunset",
+            "pine",
+            "shadow",
+            "leaf",
+            "dawn",
+            "glitter",
+            "forest",
+            "hill",
+            "cloud",
+            "meadow",
+            "sun",
+            "glade",
+            "bird",
+            "brook",
+            "butterfly",
+            "bush",
+            "dew",
+            "dust",
+            "field",
+            "fire",
+            "flower",
+            "firefly",
+            "feather",
+            "grass",
+            "haze",
+            "mountain",
+            "night",
+            "pond",
+            "darkness",
+            "snowflake",
+            "silence",
+            "sound",
+            "sky",
+            "shape",
+            "surf",
+            "thunder",
+            "violet",
+            "water",
+            "wildflower",
+            "wave",
+            "water",
+            "resonance",
+            "sun",
+            "wood",
+            "dream",
+            "cherry",
+            "tree",
+            "fog",
+            "frost",
+            "voice",
+            "paper",
+            "frog",
+            "smoke",
+            "star"
+        )
+        return nouns[Math.floor(Math.random() * nouns.size).toInt()]
     }
 
     private fun getRandomName(): String? {
@@ -142,75 +211,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
             "lively",
             "nameless"
         )
-        val nouns = arrayOf(
-            "waterfall",
-            "river",
-            "breeze",
-            "moon",
-            "rain",
-            "wind",
-            "sea",
-            "morning",
-            "snow",
-            "lake",
-            "sunset",
-            "pine",
-            "shadow",
-            "leaf",
-            "dawn",
-            "glitter",
-            "forest",
-            "hill",
-            "cloud",
-            "meadow",
-            "sun",
-            "glade",
-            "bird",
-            "brook",
-            "butterfly",
-            "bush",
-            "dew",
-            "dust",
-            "field",
-            "fire",
-            "flower",
-            "firefly",
-            "feather",
-            "grass",
-            "haze",
-            "mountain",
-            "night",
-            "pond",
-            "darkness",
-            "snowflake",
-            "silence",
-            "sound",
-            "sky",
-            "shape",
-            "surf",
-            "thunder",
-            "violet",
-            "water",
-            "wildflower",
-            "wave",
-            "water",
-            "resonance",
-            "sun",
-            "wood",
-            "dream",
-            "cherry",
-            "tree",
-            "fog",
-            "frost",
-            "voice",
-            "paper",
-            "frog",
-            "smoke",
-            "star"
-        )
-        return adjs[Math.floor(Math.random() * adjs.size).toInt()] +
-                "_" +
-                nouns[Math.floor(Math.random() * nouns.size).toInt()]
+        return adjs[Math.floor(Math.random() * adjs.size).toInt()]
     }
 
     private fun getRandomColor(): String? {
@@ -259,7 +260,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
 //            val belongsToCurrentUser =
 //                receivedMessage?.clientID == scaledrone?.clientID
 
-            val message = Message(receivedMessage?.data?.toString()!!, MemberData("Vasya", getRandomColor()), false)
+            val message = Message(receivedMessage?.data?.toString()!!, MemberData(getRandomName(), getRandomSurname(),getRandomColor()), false)
             runOnUiThread {
                 messageAdapter?.add(message)
                 binding.messagesView.setSelection(binding.messagesView.count - 1)
