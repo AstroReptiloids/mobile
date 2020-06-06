@@ -6,7 +6,7 @@ import com.example.myapplication.data.model.MicrochatBO
 import com.example.myapplication.data.model.UserBO
 import io.reactivex.Single
 
-interface INetworkService {
+interface IRepository {
 
     fun getUsers(): Single<List<UserBO>>
 
@@ -15,5 +15,9 @@ interface INetworkService {
     fun getMicrochats(): Single<List<MicrochatBO>>
 
     fun getMessages(): Single<List<MessageBO>>
+
+    fun auth(login: String, password: String) : Single<Boolean>
+
+    fun isSignedIn() : Single<Boolean>
 
 }

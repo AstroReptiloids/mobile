@@ -2,23 +2,17 @@ package com.example.myapplication.di.modules
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.Constants
 import com.example.myapplication.data.network.AuthorizationInterceptor
 import com.example.myapplication.data.network.NetworkStateWatcher
 import com.example.myapplication.data.network.ServerResponseHandler
-import com.example.myapplication.data.network.service.INetworkService
-import com.example.myapplication.data.network.service.NetworkService
+import com.example.myapplication.data.network.service.IRepository
+import com.example.myapplication.data.network.service.Repository
 import com.example.myapplication.data.network.service.RestApi
-import com.example.myapplication.data.network.service.WebSocketApi
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tinder.scarlet.Scarlet
-import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
-import com.tinder.scarlet.messageadapter.gson.GsonMessageAdapter
-import com.tinder.scarlet.streamadapter.rxjava2.RxJava2StreamAdapterFactory
-import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -115,9 +109,15 @@ class NetworkModule(private val application: Application) {
         serverApi: RestApi,
         //webSocketApi: WebSocketApi,
         networkStateWatcher: NetworkStateWatcher,
-        serverResponseHandler: ServerResponseHandler
-    ): INetworkService {
-        return NetworkService(serverApi, networkStateWatcher, serverResponseHandler)
+        serverResponseHandler: ServerResponseHandler,
+        authorizationInterceptor: AuthorizationInterceptor
+    ): IRepository {
+        return Repository(
+            serverApi,
+            networkStateWatcher,
+            serverResponseHandler,
+            authorizationInterceptor
+        )
     }
 
     @Provides
@@ -128,7 +128,12 @@ class NetworkModule(private val application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideAuthorizationInterceptor(): AuthorizationInterceptor {
-        return AuthorizationInterceptor()
+    internal fun provideAuthorizationInterceptor(sharedPreferences: SharedPreferences): AuthorizationInterceptor {
+        return AuthorizationInterceptor(sharedPreferences)
+    }
+
+    @Provides
+    fun provideSharedPreferences(): SharedPreferences {
+        return application.getSharedPreferences("chats_shared_preferences", Context.MODE_PRIVATE)
     }
 }

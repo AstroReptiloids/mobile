@@ -1,5 +1,6 @@
 package com.example.myapplication.data.network.service
 
+import com.example.myapplication.data.network.requests.LoginRequest
 import com.example.myapplication.data.network.responses.*
 import retrofit2.Call
 import retrofit2.http.Body
@@ -21,5 +22,5 @@ interface RestApi {
     fun getMessages(): Call<GetMessagesResponse>
 
     @POST("/auth/login")
-    fun login(@Body login: String, @Body password: String): Call<LoginResponse>
+    fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
 }

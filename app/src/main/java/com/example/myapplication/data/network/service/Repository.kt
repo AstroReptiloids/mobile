@@ -1,24 +1,28 @@
 package com.example.myapplication.data.network.service
 
+import android.util.Log
 import com.example.myapplication.data.exceptions.NoConnectionToServerException
 import com.example.myapplication.data.exceptions.NoNetworkException
 import com.example.myapplication.data.model.ChatCategoryBO
 import com.example.myapplication.data.model.MessageBO
 import com.example.myapplication.data.model.MicrochatBO
 import com.example.myapplication.data.model.UserBO
+import com.example.myapplication.data.network.AuthorizationInterceptor
 import com.example.myapplication.data.network.NetworkStateWatcher
 import com.example.myapplication.data.network.ServerResponseHandler
+import com.example.myapplication.data.network.requests.LoginRequest
 import com.example.myapplication.data.network.responses.BaseResponse
 import io.reactivex.Single
 import retrofit2.Call
 import java.util.*
 
-class NetworkService(
+class Repository(
     private val restApi: RestApi,
     //private val webSocketApi: WebSocketApi,
     private val networkStateWatcher: NetworkStateWatcher,
-    private val serverResponseHandler: ServerResponseHandler
-) : INetworkService {
+    private val serverResponseHandler: ServerResponseHandler,
+    private val authorizationInterceptor: AuthorizationInterceptor
+) : IRepository {
 
     /*private val wsDisposable: Disposable =
         webSocketApi.observeWebSocketEvent().subscribeOn(Schedulers.io())
@@ -56,6 +60,20 @@ class NetworkService(
             return@fromCallable response.data?.map { messageDTO -> messageDTO.toBO() }
                 ?: Collections.emptyList()
         }
+    }
+
+    override fun auth(login: String, password: String): Single<Boolean> {
+        return Single.fromCallable {
+            val response = execute(restApi.login(LoginRequest(login, password)))
+            val token = response.data?.token ?: return@fromCallable false
+            Log.i("wtf", "token $token")
+            authorizationInterceptor.token = token
+            return@fromCallable true
+        }
+    }
+
+    override fun isSignedIn(): Single<Boolean> {
+        return Single.just(authorizationInterceptor.token != null)
     }
 
     private fun <T : BaseResponse> execute(tCall: Call<T>): T {

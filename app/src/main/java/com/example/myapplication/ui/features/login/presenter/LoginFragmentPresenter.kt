@@ -1,14 +1,21 @@
 package com.example.myapplication.ui.features.login.presenter
 
-import com.example.myapplication.data.network.service.INetworkService
-import io.reactivex.Single
+import android.util.Log
+import com.example.myapplication.data.network.service.IRepository
 import javax.inject.Inject
 
 class LoginFragmentPresenter @Inject constructor(
-    private val networkService: INetworkService
+    private val repository: IRepository
 ) : ILoginFragmentPresenter() {
 
     override fun onSignInClicked(login: String?, password: String?) {
-        runAsync(Single.just("124"), {}, {}, true)
+        if (login.isNullOrBlank() || password.isNullOrBlank()) {
+            return
+        }
+        runAsync(repository.auth(login, password), {
+            Log.i("wtf", "auth success")
+        }, {
+            Log.i("wtf", "auth failed")
+        }, true)
     }
 }

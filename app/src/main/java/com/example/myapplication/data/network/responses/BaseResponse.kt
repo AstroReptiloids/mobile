@@ -5,10 +5,13 @@ import com.google.gson.annotations.SerializedName
 open class BaseResponse {
 
     @SerializedName("error_code")
-    val errorCode: String? = null
-    @SerializedName("error_message")
-    val message: String? = null
+    var error: Error? = null
 
     val isSuccess: Boolean
-        get() = errorCode == null
+        get() = error == null
+
+    data class Error(
+        var code: Int,
+        var message: String
+    )
 }
