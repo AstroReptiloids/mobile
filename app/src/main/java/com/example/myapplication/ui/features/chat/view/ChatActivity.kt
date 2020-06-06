@@ -64,12 +64,26 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
                 System.err.println(reason)
             }
         })
+
+
+        val message = Message("receivedMessage?.data?", MemberData(getRandomName(), getRandomSurname(),getRandomColor()), false)
+        runOnUiThread {
+            messageAdapter?.add(message)
+            binding.messagesView.setSelection(binding.messagesView.count - 1)
+        }
+
+        val message1 = Message("received?", MemberData(getRandomName(), getRandomSurname(),getRandomColor()), true)
+        runOnUiThread {
+            messageAdapter?.add(message1)
+            binding.messagesView.setSelection(binding.messagesView.count - 1)
+        }
     }
 
     fun sendMessage(view: View?) {
         val message: String = binding.editText.text.toString()
-        if (message.length > 0) {
+        if (message.isNotEmpty()) {
             scaledrone?.publish(roomName, message)
+            presenter.sendMessage(message)
             binding.editText.text.clear()
         }
     }
