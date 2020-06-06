@@ -6,12 +6,14 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.example.myapplication.R;
@@ -88,13 +90,21 @@ public class MessageAdapter extends BaseAdapter {
             surname = surname == null ? "?"
                     : surname.substring(0, 1).toUpperCase(Locale.getDefault());
 
-            int size = dpToPx(35);
+            int size = dpToPx(72);
             TextDrawable drawable1 = TextDrawable.builder().beginConfig().width(size).height(size)
                     .useFont(Typeface.DEFAULT)
                     .fontSize(dpToPx(30)).endConfig()
                     .buildRound(name + surname, Color.parseColor(message.getMemberData().getColor()));
             holder.avatar.setImageDrawable(drawable1);
         }
+
+        convertView.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(context,
+                    message.getText(),
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        });
 
         return convertView;
     }
