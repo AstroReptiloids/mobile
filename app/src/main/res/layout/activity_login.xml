@@ -71,7 +71,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
-                    android:enabled="false"
+                    android:text="Test"
                     android:id="@+id/sign_in_button"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"

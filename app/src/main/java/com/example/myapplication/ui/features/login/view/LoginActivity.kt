@@ -1,10 +1,11 @@
 package com.example.myapplication.ui.features.login.view
 
 import android.os.Bundle
-import androidx.core.widget.doAfterTextChanged
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityLoginBinding
 import com.example.myapplication.ui.base.activity.BaseMvpActivity
+import com.example.myapplication.ui.features.login.di.DaggerLoginFragmentComponent
+import com.example.myapplication.ui.features.login.di.LoginFragmentModule
 import com.example.myapplication.ui.features.login.presenter.ILoginFragmentPresenter
 
 
@@ -22,24 +23,24 @@ class LoginActivity : BaseMvpActivity<ActivityLoginBinding, ILoginView, ILoginFr
                     password = binding.passwordEditText.text.toString()
                 )
             }
-            loginEditText.doAfterTextChanged {
+            /*loginEditText.doAfterTextChanged {
                 signInButton.isEnabled = loginEditText.text.toString().isEmpty().not() &&
                         passwordEditText.text.isEmpty().not()
             }
             passwordEditText.doAfterTextChanged {
                 signInButton.isEnabled = loginEditText.text.toString().isEmpty().not() &&
                         passwordEditText.text.isEmpty().not()
-            }
+            }*/
         }
     }
 
 
     override fun injectDependencies() {
-//        DaggerLoginFragmentComponent.builder()
-//            .activityComponent(activityComponent)
-//            .loginFragmentModule(LoginFragmentModule())
-//            .build()
-//            .inject(this)
+        DaggerLoginFragmentComponent.builder()
+            .applicationComponent(applicationComponent)
+            .loginFragmentModule(LoginFragmentModule())
+            .build()
+            .inject(this)
     }
 
     override fun hideProgress() {

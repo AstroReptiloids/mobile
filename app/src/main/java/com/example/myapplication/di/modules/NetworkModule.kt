@@ -53,7 +53,7 @@ class NetworkModule(private val application: Application) {
             .client(httpClient).baseUrl(Constants.SERVER_MAIN_URL).build()
     }
 
-    @Provides
+    /*@Provides
     @Singleton
     internal fun provideWebSocketApi(scarlet: Scarlet): WebSocketApi {
         return scarlet.create(WebSocketApi::class.java)
@@ -70,7 +70,7 @@ class NetworkModule(private val application: Application) {
                 AndroidLifecycle.ofApplicationForeground(application)
             )
             .build()
-    }
+    }*/
 
     @Provides
     @Singleton
@@ -93,9 +93,6 @@ class NetworkModule(private val application: Application) {
     @Singleton
     internal fun provideGson(): Gson {
         return GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-            .setPrettyPrinting()
-            .serializeNulls()
             .setLenient()
             .create()
     }
@@ -116,11 +113,11 @@ class NetworkModule(private val application: Application) {
     @Singleton
     internal fun provideNetworkService(
         serverApi: RestApi,
-        webSocketApi: WebSocketApi,
+        //webSocketApi: WebSocketApi,
         networkStateWatcher: NetworkStateWatcher,
         serverResponseHandler: ServerResponseHandler
     ): INetworkService {
-        return NetworkService(serverApi, webSocketApi, networkStateWatcher, serverResponseHandler)
+        return NetworkService(serverApi, networkStateWatcher, serverResponseHandler)
     }
 
     @Provides
