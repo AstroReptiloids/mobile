@@ -4,14 +4,13 @@ import android.util.Log
 
 class InternalServerException(
     val responseCode: Int,
-    val status: String?,
     override val message: String?
 ) : RuntimeException() {
 
     init {
         Log.e(
             javaClass.simpleName,
-            this.responseCode.toString() + " : " + this.status + " : " + this.message
+            this.responseCode.toString() + " : " + this.message
         )
     }
 }

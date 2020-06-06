@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.features.login.view.LoginActivity" />
+        <activity
+            android:name=".ui.features.login.view.LoginActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.features.chat.view.ChatActivity" />
     </application>
 

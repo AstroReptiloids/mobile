@@ -1,6 +1,5 @@
-package com.example.myapplication.data.network.service
+package com.example.myapplication.data.network.repository
 
-import android.util.Log
 import com.example.myapplication.data.exceptions.NoConnectionToServerException
 import com.example.myapplication.data.exceptions.NoNetworkException
 import com.example.myapplication.data.model.ChatCategoryBO
@@ -11,7 +10,9 @@ import com.example.myapplication.data.network.AuthorizationInterceptor
 import com.example.myapplication.data.network.NetworkStateWatcher
 import com.example.myapplication.data.network.ServerResponseHandler
 import com.example.myapplication.data.network.requests.LoginRequest
+import com.example.myapplication.data.network.requests.SendMessageRequest
 import com.example.myapplication.data.network.responses.BaseResponse
+import com.example.myapplication.data.network.service.RestApi
 import io.reactivex.Single
 import retrofit2.Call
 import java.util.*
@@ -46,18 +47,18 @@ class Repository(
         }
     }
 
-    override fun getMicrochats(): Single<List<MicrochatBO>> {
+    override fun getMicrochats(parentId: String?): Single<List<MicrochatBO>> {
         return Single.fromCallable {
-            val response = execute(restApi.getMicrochats())
-            return@fromCallable response.data?.map { microchatDTO -> microchatDTO.toBO() }
+            val response = execute(restApi.getMicrochats(parentId))
+            return@fromCallable response.data?.microchats?.map { microchatDTO -> microchatDTO.toBO() }
                 ?: Collections.emptyList()
         }
     }
 
-    override fun getMessages(): Single<List<MessageBO>> {
+    override fun getMessages(microchatId: String?): Single<List<MessageBO>> {
         return Single.fromCallable {
-            val response = execute(restApi.getMessages())
-            return@fromCallable response.data?.map { messageDTO -> messageDTO.toBO() }
+            val response = execute(restApi.getMessages(microchatId))
+            return@fromCallable response.data?.messages?.map { messageDTO -> messageDTO.toBO() }
                 ?: Collections.emptyList()
         }
     }
@@ -66,7 +67,6 @@ class Repository(
         return Single.fromCallable {
             val response = execute(restApi.login(LoginRequest(login, password)))
             val token = response.data?.token ?: return@fromCallable false
-            Log.i("wtf", "token $token")
             authorizationInterceptor.token = token
             return@fromCallable true
         }
@@ -74,6 +74,18 @@ class Repository(
 
     override fun isSignedIn(): Single<Boolean> {
         return Single.just(authorizationInterceptor.token != null)
+    }
+
+    override fun sendMessage(
+        text: String,
+        microchatId: String,
+        referenceId: String?
+    ): Single<MessageBO> {
+        return Single.fromCallable {
+            val request = SendMessageRequest(microchatId, referenceId, text)
+            val response = execute(restApi.sendMessage(request))
+            return@fromCallable response.data
+        }.map { messageDTO -> messageDTO.toBO() }
     }
 
     private fun <T : BaseResponse> execute(tCall: Call<T>): T {

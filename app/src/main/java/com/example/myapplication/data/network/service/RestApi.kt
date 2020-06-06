@@ -1,11 +1,13 @@
 package com.example.myapplication.data.network.service
 
 import com.example.myapplication.data.network.requests.LoginRequest
+import com.example.myapplication.data.network.requests.SendMessageRequest
 import com.example.myapplication.data.network.responses.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface RestApi {
 
@@ -16,11 +18,14 @@ interface RestApi {
     fun getChatCategories(): Call<GetChatCategoriesResponse>
 
     @GET("/microchats")
-    fun getMicrochats(): Call<GetMicrochatsResponse>
+    fun getMicrochats(@Query("parent_id") parentId: String?): Call<GetMicrochatsResponse>
 
     @GET("/messages")
-    fun getMessages(): Call<GetMessagesResponse>
+    fun getMessages(@Query("microchat_id") microchatId: String?): Call<GetMessagesResponse>
 
     @POST("/auth/login")
     fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
+
+    @POST("/messages")
+    fun sendMessage(@Body sendMessageRequest: SendMessageRequest): Call<SendMessageResponse>
 }

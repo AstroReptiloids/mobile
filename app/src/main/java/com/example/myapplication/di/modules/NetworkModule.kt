@@ -8,8 +8,8 @@ import com.example.myapplication.Constants
 import com.example.myapplication.data.network.AuthorizationInterceptor
 import com.example.myapplication.data.network.NetworkStateWatcher
 import com.example.myapplication.data.network.ServerResponseHandler
-import com.example.myapplication.data.network.service.IRepository
-import com.example.myapplication.data.network.service.Repository
+import com.example.myapplication.data.network.repository.IRepository
+import com.example.myapplication.data.network.repository.Repository
 import com.example.myapplication.data.network.service.RestApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -78,8 +78,8 @@ class NetworkModule(private val application: Application) {
         return OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
-            .addInterceptor(interceptor)
             .addInterceptor(authorizationInterceptor)
+            .addInterceptor(interceptor)
             .build()
     }
 

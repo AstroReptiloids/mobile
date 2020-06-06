@@ -30,7 +30,7 @@ class AuthorizationInterceptor(
             return chain.proceed(chain.request())
         }
         val newRequest = chain.request().newBuilder()
-            .addHeader("Authorization", "Bearer $token")
+            .addHeader("Authorization", "$token")
             .build()
         return chain.proceed(newRequest)
     }

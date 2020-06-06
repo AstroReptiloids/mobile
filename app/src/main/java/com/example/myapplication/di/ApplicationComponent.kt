@@ -1,7 +1,7 @@
 package com.example.myapplication.di
 
 import android.content.Context
-import com.example.myapplication.data.network.service.IRepository
+import com.example.myapplication.data.network.repository.IRepository
 import com.example.myapplication.di.modules.NetworkModule
 import com.example.myapplication.ui.base.utils.Router
 import com.example.myapplication.di.modules.ApplicationModule

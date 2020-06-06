@@ -1,5 +1,6 @@
 package com.example.myapplication.data.network.dto
 
+import com.example.myapplication.data.DateMapper
 import com.example.myapplication.data.model.MessageBO
 import com.google.gson.annotations.SerializedName
 
@@ -11,8 +12,9 @@ data class MessageDTO(
     val userId: String,
     @SerializedName("reference_id")
     val referenceId: String?,
-    val timestamp: String?,
-    val text: String
+    val text: String,
+    val createdAt: String? = null,
+    val updatedAt: String? = null
 ) {
 
     fun toBO(): MessageBO = MessageBO(
@@ -20,7 +22,20 @@ data class MessageDTO(
         microchatId = microchatId,
         userId = userId,
         referenceId = referenceId ?: "",
-        timestamp = timestamp ?: "",
-        text = text
+        text = text,
+        createdAt = DateMapper.parseDate(createdAt),
+        updatedAt = DateMapper.parseDate(updatedAt)
     )
+
+    companion object {
+        fun fromBO(messageBO: MessageBO): MessageDTO {
+            return MessageDTO(
+                id = messageBO.id,
+                userId = messageBO.userId,
+                microchatId = messageBO.microchatId,
+                referenceId = messageBO.referenceId,
+                text = messageBO.text
+            )
+        }
+    }
 }

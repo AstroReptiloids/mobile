@@ -1,5 +1,6 @@
 package com.example.myapplication.data.network.dto
 
+import com.example.myapplication.data.DateMapper
 import com.example.myapplication.data.model.MicrochatBO
 import com.google.gson.annotations.SerializedName
 
@@ -11,16 +12,16 @@ open class MicrochatDTO(
     val categoryId: String,
     val title: String,
     val description: String,
-    @SerializedName("creator_id")
-    val creatorId: String?,
-    val timestamp: String?,
     @SerializedName("message_count")
     val messageCount: Int?,
     @SerializedName("microchat_count")
     val microchatCount: Int?,
     @SerializedName("people_count")
     val peopleCount: Int?,
-    val hot: Float?
+    val hot: Float?,
+    val createdAt: String,
+    val updatedAt: String,
+    val creator: UserDTO
 ) {
 
     fun toBO(): MicrochatBO {
@@ -30,12 +31,13 @@ open class MicrochatDTO(
             categoryId = categoryId,
             title = title,
             description = description,
-            creatorId = creatorId ?: "",
-            timestamp = timestamp ?: "",
+            creator = creator.toBO(),
             messageCount = messageCount ?: 0,
             microchatCount = microchatCount ?: 0,
             peopleCount = peopleCount ?: 0,
-            hot = hot ?: 0F
+            hot = hot ?: 0F,
+            createdAt = DateMapper.parseDate(createdAt),
+            updatedAt = DateMapper.parseDate(updatedAt)
         )
     }
 }

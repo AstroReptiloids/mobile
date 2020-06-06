@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.features.login.presenter
 
 import android.util.Log
-import com.example.myapplication.data.network.service.IRepository
+import com.example.myapplication.data.network.repository.IRepository
 import javax.inject.Inject
 
 class LoginFragmentPresenter @Inject constructor(
