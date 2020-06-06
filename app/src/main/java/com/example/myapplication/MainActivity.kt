@@ -1,7 +1,8 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.ui.base.utils.Router
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         router = Router()
-        router.navigateLoginActivity(this)
+        findViewById<Button>(R.id.chat_button).setOnClickListener { router.navigateChatActivity(this) }
     }
 }

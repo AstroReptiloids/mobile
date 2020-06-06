@@ -1,13 +1,14 @@
 package com.example.myapplication.ui.features.login.di
 
-import com.example.myapplication.di.ActivityComponent
+import com.example.myapplication.di.ApplicationComponent
+import com.example.myapplication.di.scopes.PerActivity
 import com.example.myapplication.di.scopes.PerFragment
 import com.example.myapplication.ui.features.login.view.LoginActivity
 import dagger.Component
 
-@PerFragment
+@PerActivity
 @Component(
-    dependencies = [ActivityComponent::class],
+    dependencies = [ApplicationComponent::class],
     modules = [LoginFragmentModule::class]
 )
 interface LoginFragmentComponent {

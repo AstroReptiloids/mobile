@@ -4,15 +4,15 @@ import android.content.Context
 import com.example.myapplication.MainActivity
 import com.example.myapplication.data.network.service.INetworkService
 import com.example.myapplication.di.modules.NetworkModule
-import com.example.myapplication.di.scopes.PerActivity
 import com.example.myapplication.ui.base.utils.Router
-import com.example.myapplication.di.modules.ActivityModule
+import com.example.myapplication.di.modules.ApplicationModule
 import com.example.myapplication.ui.base.handler.IErrorHandler
 import dagger.Component
+import javax.inject.Singleton
 
-@PerActivity
-@Component(modules = [ActivityModule::class, NetworkModule::class])
-interface ActivityComponent {
+@Singleton
+@Component(modules = [ApplicationModule::class, NetworkModule::class])
+interface ApplicationComponent {
 
     val context: Context
     val errorHandler: IErrorHandler

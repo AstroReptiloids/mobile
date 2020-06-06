@@ -5,6 +5,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.example.myapplication.MyApp
+import com.example.myapplication.di.ApplicationComponent
 import com.example.myapplication.ui.base.utils.Router
 import com.example.myapplication.ui.base.utils.ToastShower
 import javax.inject.Inject
@@ -17,11 +19,14 @@ abstract class BaseActivity<B : ViewDataBinding> : AppCompatActivity() {
     @Inject
     lateinit var toastShower: ToastShower
 
+    lateinit var applicationComponent: ApplicationComponent
+
     lateinit var binding: B
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, layoutResId)
+        applicationComponent = (application as MyApp).component
         injectDependencies()
     }
 

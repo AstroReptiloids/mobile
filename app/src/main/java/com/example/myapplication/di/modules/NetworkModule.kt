@@ -11,7 +11,6 @@ import com.example.myapplication.data.network.service.ServerApi
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.example.myapplication.di.scopes.PerActivity
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -22,30 +21,31 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 class NetworkModule {
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun providerServerUrl(): String {
         return Constants.SERVER_MAIN_URL
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideServerApi(retrofit: Retrofit): ServerApi {
         return retrofit.create(ServerApi::class.java)
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideRetrofit(builder: Retrofit.Builder, serverUrl: String): Retrofit {
         return builder.baseUrl(serverUrl).build()
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideRetrofitBuilder(converterFactory: Converter.Factory): Retrofit.Builder {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = if (BuildConfig.DEBUG) {
@@ -67,7 +67,7 @@ class NetworkModule {
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideGson(): Gson {
         return GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
@@ -78,19 +78,19 @@ class NetworkModule {
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideConverterFactory(gson: Gson): Converter.Factory {
         return GsonConverterFactory.create(gson)
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun providerResponseHandler(): ServerResponseHandler {
         return ServerResponseHandler()
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideNetworkService(
         serverApi: ServerApi,
         networkStateWatcher: NetworkStateWatcher,
@@ -100,7 +100,7 @@ class NetworkModule {
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun provideNetworkStateWatcher(context: Context): NetworkStateWatcher {
         return NetworkStateWatcher(context)
     }

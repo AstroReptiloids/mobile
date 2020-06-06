@@ -1,25 +1,25 @@
 package com.example.myapplication.di.modules
 
 import android.content.Context
-import com.example.myapplication.di.scopes.PerActivity
 import com.example.myapplication.ui.base.handler.ErrorHandler
 import com.example.myapplication.ui.base.handler.IErrorHandler
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
-class ActivityModule(
+class ApplicationModule(
     private val context: Context
 ) {
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun providerContext(): Context {
         return context
     }
 
     @Provides
-    @PerActivity
+    @Singleton
     internal fun providerHandler(context: Context): IErrorHandler {
         return ErrorHandler(context)
     }
