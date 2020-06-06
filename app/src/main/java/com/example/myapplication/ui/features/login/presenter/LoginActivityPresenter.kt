@@ -1,21 +1,21 @@
 package com.example.myapplication.ui.features.login.presenter
 
-import android.util.Log
+import com.example.myapplication.R
 import com.example.myapplication.data.network.repository.IRepository
 import javax.inject.Inject
 
-class LoginFragmentPresenter @Inject constructor(
+class LoginActivityPresenter @Inject constructor(
     private val repository: IRepository
-) : ILoginFragmentPresenter() {
+) : ILoginActivityPresenter() {
 
     override fun onSignInClicked(login: String?, password: String?) {
         if (login.isNullOrBlank() || password.isNullOrBlank()) {
             return
         }
         runAsync(repository.auth(login, password), {
-            Log.i("wtf", "auth success")
+            view?.navigateMenu()
         }, {
-            Log.i("wtf", "auth failed")
+            view?.showToast(R.string.auth_error_text)
         }, true)
     }
 }

@@ -4,7 +4,7 @@ import com.example.myapplication.data.network.repository.IRepository
 import javax.inject.Inject
 
 class ChatActivityPresenter @Inject constructor(
-    private val networkService: IRepository
+    private val repository: IRepository
 ) : IChatActivityPresenter() {
 
 }
