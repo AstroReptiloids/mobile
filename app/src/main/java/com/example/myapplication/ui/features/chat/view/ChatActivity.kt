@@ -12,31 +12,16 @@ import com.example.myapplication.ui.features.chat.data.Message
 import com.example.myapplication.ui.features.chat.di.ChatActivityModule
 import com.example.myapplication.ui.features.chat.di.DaggerChatActivityComponent
 import com.example.myapplication.ui.features.chat.presenter.IChatActivityPresenter
-import com.fasterxml.jackson.core.JsonProcessingException
+import java.io.IOException
 
-import com.fasterxml.jackson.databind.JsonNode
-
-import com.fasterxml.jackson.databind.ObjectMapper
-
-import com.scaledrone.lib.Listener
-
-import com.scaledrone.lib.Member
-
-import com.scaledrone.lib.Room
-
-import com.scaledrone.lib.RoomListener
-
-import com.scaledrone.lib.Scaledrone
 import java.util.*
 
 
-class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(),
-    RoomListener {
+class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(){
 
     private val channelID = "ioncKdqaLM7SSfrA"
     private val roomName = "observable-room"
 
-    private var scaledrone: Scaledrone? = null
     private var messageAdapter: MessageAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,25 +31,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         binding.messagesView.adapter = messageAdapter
 
         val data = MemberData(getRandomName(), getRandomName(), getRandomColor())
-        scaledrone = Scaledrone(channelID, data)
-        scaledrone?.connect(object : Listener {
-            override fun onOpen() {
-                println("Scaledrone connection open")
-                scaledrone?.subscribe(roomName, this@ChatActivity)
-            }
 
-            override fun onOpenFailure(ex: Exception) {
-                System.err.println(ex)
-            }
-
-            override fun onFailure(ex: Exception) {
-                System.err.println(ex)
-            }
-
-            override fun onClosed(reason: String) {
-                System.err.println(reason)
-            }
-        })
 
 
         initTestMessage()
@@ -295,27 +262,30 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
 
     }
 
-    override fun onOpen(room: Room?) {
+    fun onOpen() {
         println("Conneted to room")
     }
 
-    override fun onOpenFailure(room: Room?, ex: java.lang.Exception?) {
+    fun onOpenFailure(ex: java.lang.Exception?) {
         System.err.println(ex)
     }
 
-    override fun onMessage(room: Room?, receivedMessage: com.scaledrone.lib.Message?) {
+    // API: get message
+    fun onMessageReceived(receivedMessage: Message?) {
         try {
-            val message = Message(
-                receivedMessage?.data?.toString()!!,
-                MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-                isBelongsToCurrentUser = false,
-                isChat = true
-            )
+            val message = receivedMessage?.text?.let {
+                Message(
+                    it,
+                    MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+                    isBelongsToCurrentUser = false,
+                    isChat = true
+                )
+            }
             runOnUiThread {
                 messageAdapter?.add(message)
                 binding.messagesView.setSelection(binding.messagesView.count - 1)
             }
-        } catch (e: JsonProcessingException) {
+        } catch (e: IOException) {
             e.printStackTrace()
         }
     }

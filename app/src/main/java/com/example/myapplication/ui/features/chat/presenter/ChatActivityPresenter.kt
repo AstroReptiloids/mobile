@@ -9,10 +9,8 @@ class ChatActivityPresenter @Inject constructor(
 
 
     override fun sendMessage(text: String) {
-
+// API: send message
     }
 
-    fun createChat() {
 
-    }
 }
