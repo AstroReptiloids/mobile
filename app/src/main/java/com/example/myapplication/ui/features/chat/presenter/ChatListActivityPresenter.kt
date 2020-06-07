@@ -3,13 +3,16 @@ package com.example.myapplication.ui.features.chat.presenter
 import com.example.myapplication.data.network.repository.IRepository
 import javax.inject.Inject
 
-class ChatActivityPresenter @Inject constructor(
+class ChatListActivityPresenter @Inject constructor(
     private val repository: IRepository
-) : IChatActivityPresenter() {
+) : IChatListActivityPresenter() {
 
+    override fun createChat() {
+        // API: create chat
+    }
 
-    override fun sendMessage(text: String) {
-// API: send message
+    override fun openChat() {
+
     }
 
 

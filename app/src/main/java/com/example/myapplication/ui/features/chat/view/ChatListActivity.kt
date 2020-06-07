@@ -1,43 +1,43 @@
 package com.example.myapplication.ui.features.chat.view
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.R
-import com.example.myapplication.databinding.ActivityChatBinding
+import com.example.myapplication.databinding.ActivityChatListBinding
 import com.example.myapplication.ui.base.activity.BaseMvpActivity
-import com.example.myapplication.ui.features.chat.adapter.MessageAdapter
+import com.example.myapplication.ui.features.chat.adapter.ChatAdapter
 import com.example.myapplication.ui.features.chat.data.MemberData
 import com.example.myapplication.ui.features.chat.data.Message
-import com.example.myapplication.ui.features.chat.di.ChatActivityModule
-import com.example.myapplication.ui.features.chat.di.DaggerChatActivityComponent
-import com.example.myapplication.ui.features.chat.presenter.IChatActivityPresenter
+import com.example.myapplication.ui.features.chat.di.ChatListActivityModule
+import com.example.myapplication.ui.features.chat.di.DaggerChatListActivityComponent
+import com.example.myapplication.ui.features.chat.presenter.IChatListActivityPresenter
 import java.io.IOException
-
 import java.util.*
 
 
-class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(){
+class ChatListActivity :
+    BaseMvpActivity<ActivityChatListBinding, IChatListView, IChatListActivityPresenter>() {
 
-    private val channelID = "ioncKdqaLM7SSfrA"
-    private val roomName = "observable-room"
-
-    private var messageAdapter: MessageAdapter? = null
+    private var messageAdapter: ChatAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        messageAdapter = MessageAdapter(this)
+        messageAdapter = ChatAdapter(this)
         binding.messagesView.adapter = messageAdapter
 
         testInitTestMessage()
 
-        title = "Микрочаты"
+        title = "Список чатов"
     }
 
     private fun testInitTestMessage() {
         val message = Message(
-            "А какими средствами общения вы пользуетесь?",
+            "Тема 1",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
             isChat = true
@@ -48,10 +48,10 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         }
 
         val message1 = Message(
-            "Zoom, Telegram",
+            "Тема 2",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            true,
-            isChat = false
+            false,
+            isChat = true
         )
         runOnUiThread {
             messageAdapter?.add(message1)
@@ -59,60 +59,39 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         }
 
         val message3 = Message(
-            "А у меня стартап на 5000 пользователей. Го ко мне",
+            "Тема 3",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
             isChat = true
         )
-        message3.fireCount=3
-        message3.forkCount=2
+        message3.fireCount = 3
+        message3.forkCount = 2
         message3.peoplesCount = 50
         runOnUiThread {
             messageAdapter?.add(message3)
             binding.messagesView.setSelection(binding.messagesView.count - 1)
         }
-
-        val message4 = Message(
-            "Почта России",
-            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            isBelongsToCurrentUser = false,
-            isChat = false
-        )
-        runOnUiThread {
-            messageAdapter?.add(message4)
-            binding.messagesView.setSelection(binding.messagesView.count - 1)
-        }
-
-        val message5 = Message(
-            "А я пользуюсь только решением AstroReptiloids!!!",
-            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            isBelongsToCurrentUser = false,
-            isChat = true
-        )
-        runOnUiThread {
-            messageAdapter?.add(message5)
-            binding.messagesView.setSelection(binding.messagesView.count - 1)
-        }
     }
 
-    fun sendMessage(view: View?) {
-        val messageText: String = binding.editText.text.toString()
-        if (messageText.isNotEmpty()) {
-            presenter.sendMessage(messageText)
+    fun createChat(view: View?) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Введите название чата")
 
-            val message = Message(
-                messageText,
-                MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-                isBelongsToCurrentUser = true,
-                isChat = false
-            )
-            runOnUiThread {
-                messageAdapter?.add(message)
-                binding.messagesView.setSelection(binding.messagesView.count - 1)
-            }
+        val customLayout: View =
+            layoutInflater.inflate(R.layout.create_chat_dialog, null)
+        builder.setView(customLayout)
 
-            binding.editText.text.clear()
+        builder.setPositiveButton(
+            "Создать"
+        ) { dialog, which ->
+            val editText = customLayout.findViewById<EditText>(R.id.editText)
+
+            (editText.text.toString())
+            startActivity(Intent(this, ChatActivity::class.java))
         }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
     private fun getRandomSurname(): String? {
@@ -265,13 +244,14 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
     }
 
     override val layoutResId: Int
-        get() = R.layout.activity_chat
+        get() = R.layout.activity_chat_list
 
     override fun injectDependencies() {
-        DaggerChatActivityComponent.builder()
+        DaggerChatListActivityComponent.builder()
             .applicationComponent(applicationComponent)
-            .chatActivityModule(ChatActivityModule())
-            .build().inject(this)
+            .chatListActivityModule(ChatListActivityModule())
+            .build()
+            .inject(this)
     }
 
     override fun hideProgress() {
@@ -290,7 +270,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         System.err.println(ex)
     }
 
-    // API: get message
+    // API: get chat
     fun onMessageReceived(receivedMessage: Message?) {
         try {
             val message = receivedMessage?.text?.let {
