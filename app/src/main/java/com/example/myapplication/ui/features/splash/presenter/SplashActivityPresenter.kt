@@ -11,15 +11,12 @@ class SplashActivityPresenter @Inject constructor(
 
     override fun bindView(view: ISplashView) {
         super.bindView(view)
-        runAsync(repository.observeNewMessages(), {
-            Log.i("wtf", "message: $it")
-        })
-        /*runAsync(repository.isSignedIn(), {
+        runAsync(repository.isSignedIn(), {
             if (it) {
                 view.navigateMenu()
             } else {
                 view.navigateLoginScreen()
             }
-        }, {}, true)*/
+        }, {}, true)
     }
 }

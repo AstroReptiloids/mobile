@@ -2,38 +2,37 @@ package com.example.myapplication.ui.features.chat.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.example.myapplication.R;
 import com.example.myapplication.ui.features.chat.data.Message;
-import com.example.myapplication.ui.features.chat.view.ChatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class ChatAdapter extends BaseAdapter {
 
+    public interface Listener {
+        void onCreateMicrochatClicked(Message message);
+    }
+
     List<Message> chats = new ArrayList<>();
     Context context;
+
     public ChatAdapter(Context context) {
         this.context = context;
     }
+
+    public Listener listener;
 
 
     public void add(Message message) {
@@ -63,14 +62,14 @@ public class ChatAdapter extends BaseAdapter {
         Message message = chats.get(i);
 
 
-            assert messageInflater != null;
-            convertView = messageInflater.inflate(R.layout.chat_item, null);
-            holder.name = convertView.findViewById(R.id.name);
-            holder.messageBody = convertView.findViewById(R.id.message_body);
-            convertView.setTag(holder);
+        assert messageInflater != null;
+        convertView = messageInflater.inflate(R.layout.chat_item, null);
+        holder.name = convertView.findViewById(R.id.name);
+        holder.messageBody = convertView.findViewById(R.id.message_body);
+        convertView.setTag(holder);
 
-            holder.name.setText(message.getMemberData().getName() + " " + message.getMemberData().getSurname());
-            holder.messageBody.setText(message.getText());
+        holder.name.setText(message.getMemberData().getName() + " " + message.getMemberData().getSurname());
+        holder.messageBody.setText(message.getText());
 
         convertView.setOnClickListener(v -> {
 
@@ -81,7 +80,9 @@ public class ChatAdapter extends BaseAdapter {
             builder1.setPositiveButton(
                     "Да",
                     (dialog, id) -> {
-                        context.startActivity(new Intent(context, ChatActivity.class));
+                        if (listener != null) {
+                            listener.onCreateMicrochatClicked(message);
+                        }
                         dialog.cancel();
                     });
 
@@ -99,11 +100,11 @@ public class ChatAdapter extends BaseAdapter {
         holder.peoplesCount = convertView.findViewById(R.id.peoples_count);
         holder.forkCount = convertView.findViewById(R.id.fork_count);
 
-        if(message.isChat()) {
+        if (message.isChat()) {
             holder.chatInfoBlock.setVisibility(View.VISIBLE);
 
             initChatBlock(holder, message);
-        }else {
+        } else {
             holder.chatInfoBlock.setVisibility(View.GONE);
         }
 

@@ -1,12 +1,12 @@
 package com.example.myapplication.ui.features.chat.view
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.R
+import com.example.myapplication.data.model.MicrochatBO
 import com.example.myapplication.databinding.ActivityChatListBinding
 import com.example.myapplication.ui.base.activity.BaseMvpActivity
 import com.example.myapplication.ui.features.chat.adapter.ChatAdapter
@@ -20,23 +20,67 @@ import java.util.*
 
 
 class ChatListActivity :
-    BaseMvpActivity<ActivityChatListBinding, IChatListView, IChatListActivityPresenter>() {
+    BaseMvpActivity<ActivityChatListBinding, IChatListView, IChatListActivityPresenter>(),
+    IChatListView {
 
     private var messageAdapter: ChatAdapter? = null
+
+    var categoryId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         messageAdapter = ChatAdapter(this)
         binding.messagesView.adapter = messageAdapter
+        messageAdapter?.listener = ChatAdapter.Listener {
+            if (!it.isChat) {
+                presenter.createChat(it.text, "", it.parentId, categoryId)
+            } else {
+                presenter.getChatAndOpen(it.parentId)
+            }
+        }
 
-        testInitTestMessage()
+        categoryId = intent.getStringExtra("id")
 
+        presenter.onCreate(categoryId)
         title = "Список чатов"
+    }
+
+
+    override fun showChats(list: List<MicrochatBO>) {
+        for (i in list) {
+            val message = Message(
+                i.parentId,
+                i.id,
+                i.title,
+                MemberData(i.creator?.firstName, i.creator?.lastName, getRandomColor()),
+                isBelongsToCurrentUser = false,
+                isChat = true
+            )
+            message.fireCount = i.hot.toInt()
+            message.peoplesCount = i.peopleCount
+            message.forkCount = i.microchatCount
+
+            runOnUiThread {
+                messageAdapter?.add(message)
+                binding.messagesView.setSelection(binding.messagesView.count - 1)
+            }
+        }
+
+
+    }
+
+
+    override fun openCreatedChat(chatBO: MicrochatBO) {
+        startActivity(Intent(this, ChatActivity::class.java).apply {
+            putExtra("microchat", chatBO)
+        })
     }
 
     private fun testInitTestMessage() {
         val message = Message(
+            "141",
+            "141",
             "Тема 1",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
@@ -48,6 +92,8 @@ class ChatListActivity :
         }
 
         val message1 = Message(
+            "141",
+            "141",
             "Тема 2",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             false,
@@ -59,6 +105,8 @@ class ChatListActivity :
         }
 
         val message3 = Message(
+            "142",
+            "142",
             "Тема 3",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
@@ -86,8 +134,8 @@ class ChatListActivity :
         ) { dialog, which ->
             val editText = customLayout.findViewById<EditText>(R.id.editText)
 
-            (editText.text.toString())
-            startActivity(Intent(this, ChatActivity::class.java))
+            presenter.createChat((editText.text.toString()), "", null, categoryId)
+
         }
 
         val dialog: AlertDialog = builder.create()
@@ -275,6 +323,8 @@ class ChatListActivity :
         try {
             val message = receivedMessage?.text?.let {
                 Message(
+                    "146",
+                    "146",
                     it,
                     MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
                     isBelongsToCurrentUser = false,

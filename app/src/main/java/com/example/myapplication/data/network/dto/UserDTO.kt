@@ -20,4 +20,18 @@ data class UserDTO(
             login = login
         )
     }
+
+    companion object {
+
+        fun fromBO(userBO: UserBO): UserDTO {
+            return UserDTO(
+                id = userBO.id,
+                firstName = userBO.firstName,
+                lastName = userBO.lastName,
+                login = userBO.login
+            )
+        }
+
+
+    }
 }

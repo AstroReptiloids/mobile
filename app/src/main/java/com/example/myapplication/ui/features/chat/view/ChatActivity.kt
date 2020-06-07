@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.example.myapplication.R
+import com.example.myapplication.data.model.MessageBO
+import com.example.myapplication.data.model.MicrochatBO
 import com.example.myapplication.databinding.ActivityChatBinding
 import com.example.myapplication.ui.base.activity.BaseMvpActivity
 import com.example.myapplication.ui.features.chat.adapter.MessageAdapter
@@ -17,10 +19,12 @@ import java.io.IOException
 import java.util.*
 
 
-class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(){
+class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivityPresenter>(), IChatView{
 
     private val channelID = "ioncKdqaLM7SSfrA"
     private val roomName = "observable-room"
+
+    var microcahtBO: MicrochatBO? = null
 
     private var messageAdapter: MessageAdapter? = null
 
@@ -30,13 +34,42 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         messageAdapter = MessageAdapter(this)
         binding.messagesView.adapter = messageAdapter
 
-        testInitTestMessage()
+      //  testInitTestMessage()
 
-        title = "Микрочаты"
+        microcahtBO = (intent.getSerializableExtra("microchat")) as MicrochatBO
+
+        title = microcahtBO?.title ?: "Микрочаты"
+
+        presenter.getMessages(microcahtBO?.id ?: "")
+    }
+
+    override fun showChats(list: List<MessageBO>) {
+        showToast("Сообщений: ${list.size}")
+
+        for (i in list) {
+            val message = Message(
+                i.referenceId,
+                i.id,
+                i.text,
+                MemberData(i.user.firstName, i.user.lastName, getRandomColor()),
+                isBelongsToCurrentUser = false,
+                isChat = i.isParent!!
+            )
+            message.fireCount = i.hot.toInt()
+            message.peoplesCount = i.peopleCount
+            message.forkCount = i.microchatCount
+
+            runOnUiThread {
+                messageAdapter?.add(message)
+                binding.messagesView.setSelection(binding.messagesView.count - 1)
+            }
+        }
     }
 
     private fun testInitTestMessage() {
         val message = Message(
+            "123",
+            "123",
             "А какими средствами общения вы пользуетесь?",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
@@ -48,6 +81,8 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         }
 
         val message1 = Message(
+            "124",
+            "124",
             "Zoom, Telegram",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             true,
@@ -59,6 +94,8 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         }
 
         val message3 = Message(
+            "125",
+            "125",
             "А у меня стартап на 5000 пользователей. Го ко мне",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
@@ -73,6 +110,8 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         }
 
         val message4 = Message(
+            "126",
+            "126",
             "Почта России",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
@@ -84,6 +123,8 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         }
 
         val message5 = Message(
+            "127",
+            "127",
             "А я пользуюсь только решением AstroReptiloids!!!",
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
             isBelongsToCurrentUser = false,
@@ -98,14 +139,19 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
     fun sendMessage(view: View?) {
         val messageText: String = binding.editText.text.toString()
         if (messageText.isNotEmpty()) {
-            presenter.sendMessage(messageText)
+
+
 
             val message = Message(
+                "130",
+                "130",
                 messageText,
                 MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
                 isBelongsToCurrentUser = true,
                 isChat = false
             )
+            presenter.sendMessage(message)
+
             runOnUiThread {
                 messageAdapter?.add(message)
                 binding.messagesView.setSelection(binding.messagesView.count - 1)
@@ -295,6 +341,8 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
         try {
             val message = receivedMessage?.text?.let {
                 Message(
+                    "131",
+                    "131",
                     it,
                     MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
                     isBelongsToCurrentUser = false,

@@ -10,6 +10,7 @@ import com.example.myapplication.data.model.UserBO
 import com.example.myapplication.data.network.AuthorizationInterceptor
 import com.example.myapplication.data.network.NetworkStateWatcher
 import com.example.myapplication.data.network.ServerResponseHandler
+import com.example.myapplication.data.network.requests.CreateMicrochatRequest
 import com.example.myapplication.data.network.requests.LoginRequest
 import com.example.myapplication.data.network.requests.SendMessageRequest
 import com.example.myapplication.data.network.responses.BaseResponse
@@ -35,7 +36,7 @@ class Repository(
     private val wsDisposable: Disposable =
         webSocketApi.observeWebSocketEvent().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
-                if(it is WebSocket.Event.OnConnectionOpened<*>){
+                if (it is WebSocket.Event.OnConnectionOpened<*>) {
                     webSocketApi.sendMess("hey huy")
                 }
                 Log.i("wtf", "message $it")
@@ -57,9 +58,9 @@ class Repository(
         }
     }
 
-    override fun getMicrochats(parentId: String?): Single<List<MicrochatBO>> {
+    override fun getMicrochats(parentId: String?, categoryId: String?): Single<List<MicrochatBO>> {
         return Single.fromCallable {
-            val response = execute(restApi.getMicrochats(parentId))
+            val response = execute(restApi.getMicrochats(parentId, categoryId))
             return@fromCallable response.data?.microchats?.map { microchatDTO -> microchatDTO.toBO() }
                 ?: Collections.emptyList()
         }
@@ -95,6 +96,19 @@ class Repository(
             val request = SendMessageRequest(microchatId, referenceId, text)
             val response = execute(restApi.sendMessage(request))
             return@fromCallable response.data
+        }.map { messageDTO -> messageDTO.toBO() }
+    }
+
+    override fun createMicrochat(
+        title: String,
+        description: String,
+        parentId: String?,
+        categoryId: String?
+    ): Single<MicrochatBO> {
+        return Single.fromCallable {
+            val request = CreateMicrochatRequest(title, description, parentId, categoryId)
+            val response = execute(restApi.createMicrochat(request))
+            return@fromCallable response.microchatDTO
         }.map { messageDTO -> messageDTO.toBO() }
     }
 

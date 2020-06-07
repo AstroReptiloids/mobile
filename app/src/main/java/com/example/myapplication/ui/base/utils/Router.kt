@@ -26,7 +26,9 @@ class Router @Inject constructor() {
     }
 
     fun navigateChatListActivityByCategory(activity: Activity, categoryId: String) {
-        activity.startActivity(Intent(activity, ChatListActivity::class.java))
+        activity.startActivity(Intent(activity, ChatListActivity::class.java).apply {
+            putExtra("id", categoryId)
+        })
     }
 
     fun navigateMenu(activity: Activity) {

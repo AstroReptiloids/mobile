@@ -1,5 +1,6 @@
 package com.example.myapplication.data.network.service
 
+import com.example.myapplication.data.network.requests.CreateMicrochatRequest
 import com.example.myapplication.data.network.requests.LoginRequest
 import com.example.myapplication.data.network.requests.SendMessageRequest
 import com.example.myapplication.data.network.responses.*
@@ -18,7 +19,7 @@ interface RestApi {
     fun getChatCategories(): Call<GetChatCategoriesResponse>
 
     @GET("/microchats")
-    fun getMicrochats(@Query("parent_id") parentId: String?): Call<GetMicrochatsResponse>
+    fun getMicrochats(@Query("parent_id") parentId: String?, @Query("category_id") categoryId: String?): Call<GetMicrochatsResponse>
 
     @GET("/messages")
     fun getMessages(@Query("microchat_id") microchatId: String?): Call<GetMessagesResponse>
@@ -28,4 +29,7 @@ interface RestApi {
 
     @POST("/messages")
     fun sendMessage(@Body sendMessageRequest: SendMessageRequest): Call<SendMessageResponse>
+
+    @POST("/microchats")
+    fun createMicrochat(@Body createMicrochatRequest: CreateMicrochatRequest): Call<CreateMicrochatResponse>
 }

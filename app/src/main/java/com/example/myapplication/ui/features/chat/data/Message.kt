@@ -1,6 +1,8 @@
 package com.example.myapplication.ui.features.chat.data
 
 class Message(
+    val parentId: String,
+    val id: String,
     val text: String,
     val memberData: MemberData,
     val isBelongsToCurrentUser: Boolean,

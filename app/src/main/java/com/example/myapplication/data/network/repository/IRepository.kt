@@ -13,7 +13,7 @@ interface IRepository {
 
     fun getChatCategories(): Single<List<ChatCategoryBO>>
 
-    fun getMicrochats(parentId: String? = null): Single<List<MicrochatBO>>
+    fun getMicrochats(parentId: String? = null, categoryId: String? = null): Single<List<MicrochatBO>>
 
     fun getMessages(microchatId: String? = null): Single<List<MessageBO>>
 
@@ -21,7 +21,18 @@ interface IRepository {
 
     fun isSignedIn(): Single<Boolean>
 
-    fun sendMessage(text: String, microchatId: String, referenceId: String? = null): Single<MessageBO>
+    fun sendMessage(
+        text: String,
+        microchatId: String,
+        referenceId: String? = null
+    ): Single<MessageBO>
+
+    fun createMicrochat(
+        title: String,
+        description: String,
+        parentId: String? = null,
+        categoryId: String? = null
+    ) : Single<MicrochatBO>
 
     fun observeNewMessages(): Observable<MessageBO>
 
