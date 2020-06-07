@@ -3,6 +3,7 @@ package com.example.myapplication.ui.base.utils
 import android.app.Activity
 import android.content.Intent
 import com.example.myapplication.ui.features.chat.view.ChatActivity
+import com.example.myapplication.ui.features.chat.view.ChatListActivity
 import com.example.myapplication.ui.features.login.view.LoginActivity
 import com.example.myapplication.ui.features.map.view.ChatMapActivity
 import com.example.myapplication.ui.features.menu.view.MenuActivity
@@ -22,6 +23,10 @@ class Router @Inject constructor() {
 
     fun navigateChatActivityByCategory(activity: Activity, categoryId: String) {
         activity.startActivity(Intent(activity, ChatActivity::class.java))
+    }
+
+    fun navigateChatListActivityByCategory(activity: Activity, categoryId: String) {
+        activity.startActivity(Intent(activity, ChatListActivity::class.java))
     }
 
     fun navigateMenu(activity: Activity) {

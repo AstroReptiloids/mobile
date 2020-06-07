@@ -15,5 +15,7 @@ class MainActivity : AppCompatActivity() {
         router = Router()
         findViewById<Button>(R.id.chat_button).setOnClickListener { router.navigateChatActivity(this) }
         findViewById<Button>(R.id.test_button).setOnClickListener { router.navigateLoginActivity(this) }
+
+        title = "Микрочаты"
     }
 }

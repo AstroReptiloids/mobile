@@ -18,6 +18,9 @@ class ChatMapActivity : BaseActivity<ActivityChatMapBinding>() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        title = "Startup Land"
+
         binding.webview.settings.apply {
             javaScriptEnabled = true
             cacheMode = WebSettings.LOAD_NO_CACHE
@@ -30,7 +33,7 @@ class ChatMapActivity : BaseActivity<ActivityChatMapBinding>() {
             ): Boolean {
                 val categoryId = request?.url?.toString()?.substringAfter("=")
                 categoryId?.let { id ->
-                    router.navigateChatActivityByCategory(this@ChatMapActivity, id)
+                    router.navigateChatListActivityByCategory(this@ChatMapActivity, id)
                 }
                 return true
             }
