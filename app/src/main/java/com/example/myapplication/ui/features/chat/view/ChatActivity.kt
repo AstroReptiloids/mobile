@@ -50,7 +50,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
                 null,
                 i.text,
                 MemberData(i.user?.firstName, i.user?.lastName, getRandomColor()),
-                isBelongsToCurrentUser = false,
+                isBelongsToCurrentUser = i.isMy ?: false,
                 isChat = i.isParent!!
             )
             message.fireCount = i.hot.toInt()

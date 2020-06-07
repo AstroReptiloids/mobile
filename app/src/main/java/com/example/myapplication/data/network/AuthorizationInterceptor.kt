@@ -2,7 +2,9 @@ package com.example.myapplication.data.network
 
 import android.content.SharedPreferences
 import com.example.myapplication.extensions.getToken
+import com.example.myapplication.extensions.getUserId
 import com.example.myapplication.extensions.setToken
+import com.example.myapplication.extensions.setUserId
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -26,6 +28,19 @@ class AuthorizationInterceptor(
         }
 
     var userId: String? = null
+        set(value) {
+            if (value == null) {
+                return
+            }
+            sharedPreferences.setUserId(value)
+            field = value
+        }
+        get() {
+            if (field == null) {
+                field = sharedPreferences.getUserId()
+            }
+            return field
+        }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         if (token == null) {

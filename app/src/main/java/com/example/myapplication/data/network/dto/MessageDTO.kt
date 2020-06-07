@@ -32,6 +32,22 @@ data class MessageDTO(
         microchatCount = microchatCount ?: 0,
         peopleCount = peopleCount ?: 0,
         hot = hot ?: 0F,
+        isMy = null,
+        createdAt = DateMapper.parseDate(createdAt),
+        updatedAt = DateMapper.parseDate(updatedAt)
+    )
+
+    fun toBO(userId: String): MessageBO = MessageBO(
+        id = id,
+        microchatId = microchatId,
+        user = user?.toBO(),
+        referenceId = referenceId ?: "",
+        text = text,
+        isParent = isParent,
+        microchatCount = microchatCount ?: 0,
+        peopleCount = peopleCount ?: 0,
+        hot = hot ?: 0F,
+        isMy = userId == user?.id,
         createdAt = DateMapper.parseDate(createdAt),
         updatedAt = DateMapper.parseDate(updatedAt)
     )

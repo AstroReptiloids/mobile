@@ -12,6 +12,7 @@ data class MessageBO(
     val microchatCount: Int,
     val peopleCount: Int,
     val hot: Float,
+    val isMy: Boolean?,
     val createdAt: Date?,
     val updatedAt: Date?
 )

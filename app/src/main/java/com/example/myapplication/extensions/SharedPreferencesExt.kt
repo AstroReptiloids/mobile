@@ -15,5 +15,5 @@ fun SharedPreferences.getUserId(): String? {
 }
 
 fun SharedPreferences.setUserId(token: String?) {
-    edit().putString("token_", token).apply()
+    edit().putString("userId_", token).apply()
 }

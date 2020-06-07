@@ -55,7 +55,11 @@ class Repository(
     override fun getMessages(microchatId: String?): Single<List<MessageBO>> {
         return Single.fromCallable {
             val response = execute(restApi.getMessages(microchatId))
-            return@fromCallable response.data?.messages?.map { messageDTO -> messageDTO.toBO() }
+            return@fromCallable response.data?.messages?.map { messageDTO ->
+                messageDTO.toBO(
+                    authorizationInterceptor.userId ?: ""
+                )
+            }
                 ?: Collections.emptyList()
         }
     }
@@ -64,6 +68,7 @@ class Repository(
         return Single.fromCallable {
             val response = execute(restApi.login(LoginRequest(login, password)))
             val token = response.data?.token ?: return@fromCallable false
+            authorizationInterceptor.userId = response.data.userId
             authorizationInterceptor.token = token
             return@fromCallable true
         }
@@ -82,7 +87,7 @@ class Repository(
             val request = SendMessageRequest(microchatId, referenceId, text)
             val response = execute(restApi.sendMessage(request))
             return@fromCallable response.data
-        }.map { messageDTO -> messageDTO.toBO() }
+        }.map { messageDTO -> messageDTO.toBO(authorizationInterceptor.userId ?: "") }
     }
 
     override fun createMicrochat(
@@ -110,6 +115,7 @@ class Repository(
     }
 
     override fun observeNewMessages(): Observable<MessageBO> {
-        return webSocketApi.observeNewMessages().map { it.toBO() }
+        return webSocketApi.observeNewMessages()
+            .map { it.toBO(authorizationInterceptor.userId ?: "") }
     }
 }
