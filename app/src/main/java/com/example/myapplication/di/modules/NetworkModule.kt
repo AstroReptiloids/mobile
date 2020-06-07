@@ -11,8 +11,14 @@ import com.example.myapplication.data.network.ServerResponseHandler
 import com.example.myapplication.data.network.repository.IRepository
 import com.example.myapplication.data.network.repository.Repository
 import com.example.myapplication.data.network.service.RestApi
+import com.example.myapplication.data.network.service.WebSocketApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tinder.scarlet.Scarlet
+import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
+import com.tinder.scarlet.messageadapter.gson.GsonMessageAdapter
+import com.tinder.scarlet.streamadapter.rxjava2.RxJava2StreamAdapterFactory
+import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -47,7 +53,7 @@ class NetworkModule(private val application: Application) {
             .client(httpClient).baseUrl(Constants.SERVER_MAIN_URL).build()
     }
 
-    /*@Provides
+    @Provides
     @Singleton
     internal fun provideWebSocketApi(scarlet: Scarlet): WebSocketApi {
         return scarlet.create(WebSocketApi::class.java)
@@ -57,14 +63,14 @@ class NetworkModule(private val application: Application) {
     @Singleton
     internal fun provideScarlet(httpClient: OkHttpClient): Scarlet {
         return Scarlet.Builder()
-            .webSocketFactory(httpClient.newWebSocketFactory(Constants.SERVER_MAIN_URL))
+            .webSocketFactory(httpClient.newWebSocketFactory(Constants.SERVER_WS_URL))
             .addMessageAdapterFactory(GsonMessageAdapter.Factory())
             .addStreamAdapterFactory(RxJava2StreamAdapterFactory())
             .lifecycle(
                 AndroidLifecycle.ofApplicationForeground(application)
             )
             .build()
-    }*/
+    }
 
     @Provides
     @Singleton
@@ -107,13 +113,14 @@ class NetworkModule(private val application: Application) {
     @Singleton
     internal fun provideNetworkService(
         serverApi: RestApi,
-        //webSocketApi: WebSocketApi,
+        webSocketApi: WebSocketApi,
         networkStateWatcher: NetworkStateWatcher,
         serverResponseHandler: ServerResponseHandler,
         authorizationInterceptor: AuthorizationInterceptor
     ): IRepository {
         return Repository(
             serverApi,
+            webSocketApi,
             networkStateWatcher,
             serverResponseHandler,
             authorizationInterceptor

@@ -4,6 +4,7 @@ import com.example.myapplication.data.model.ChatCategoryBO
 import com.example.myapplication.data.model.MessageBO
 import com.example.myapplication.data.model.MicrochatBO
 import com.example.myapplication.data.model.UserBO
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface IRepository {
@@ -21,5 +22,7 @@ interface IRepository {
     fun isSignedIn(): Single<Boolean>
 
     fun sendMessage(text: String, microchatId: String, referenceId: String? = null): Single<MessageBO>
+
+    fun observeNewMessages(): Observable<MessageBO>
 
 }

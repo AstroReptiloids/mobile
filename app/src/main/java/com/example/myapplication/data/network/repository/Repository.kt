@@ -1,5 +1,6 @@
 package com.example.myapplication.data.network.repository
 
+import android.util.Log
 import com.example.myapplication.data.exceptions.NoConnectionToServerException
 import com.example.myapplication.data.exceptions.NoNetworkException
 import com.example.myapplication.data.model.ChatCategoryBO
@@ -13,23 +14,32 @@ import com.example.myapplication.data.network.requests.LoginRequest
 import com.example.myapplication.data.network.requests.SendMessageRequest
 import com.example.myapplication.data.network.responses.BaseResponse
 import com.example.myapplication.data.network.service.RestApi
+import com.example.myapplication.data.network.service.WebSocketApi
+import com.tinder.scarlet.WebSocket
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import java.util.*
 
 class Repository(
     private val restApi: RestApi,
-    //private val webSocketApi: WebSocketApi,
+    private val webSocketApi: WebSocketApi,
     private val networkStateWatcher: NetworkStateWatcher,
     private val serverResponseHandler: ServerResponseHandler,
     private val authorizationInterceptor: AuthorizationInterceptor
 ) : IRepository {
 
-    /*private val wsDisposable: Disposable =
+    private val wsDisposable: Disposable =
         webSocketApi.observeWebSocketEvent().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
+                if(it is WebSocket.Event.OnConnectionOpened<*>){
+                    webSocketApi.sendMess("hey huy")
+                }
                 Log.i("wtf", "message $it")
-            }*/
+            }
 
     override fun getUsers(): Single<List<UserBO>> {
         return Single.fromCallable {
@@ -97,5 +107,9 @@ class Repository(
         } catch (e: Throwable) {
             throw NoConnectionToServerException(e.message)
         }
+    }
+
+    override fun observeNewMessages(): Observable<MessageBO> {
+        return webSocketApi.observeNewMessages().map { it.toBO() }
     }
 }
