@@ -9,6 +9,32 @@
         android:orientation="vertical"
         tools:context="com.example.scaledrone.chat.MainActivity">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="Горячее"></Button>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="Новое"></Button>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="Моё"></Button>
+
+        </LinearLayout>
+
         <ListView
             android:id="@+id/messages_view"
             android:layout_width="match_parent"
