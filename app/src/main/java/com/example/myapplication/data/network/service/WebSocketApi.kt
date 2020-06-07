@@ -1,6 +1,8 @@
 package com.example.myapplication.data.network.service
 
 import com.example.myapplication.data.network.dto.MessageDTO
+import com.example.myapplication.data.network.requests.SendTokenRequest
+import com.example.myapplication.data.network.responses.WebSocketMessageResponse
 import com.tinder.scarlet.WebSocket
 import com.tinder.scarlet.ws.Receive
 import com.tinder.scarlet.ws.Send
@@ -12,8 +14,8 @@ interface WebSocketApi {
     fun observeWebSocketEvent(): Observable<WebSocket.Event>
 
     @Receive
-    fun observeNewMessages(): Observable<MessageDTO>
+    fun observeNewMessages(): Observable<WebSocketMessageResponse>
 
     @Send
-    fun sendMess(message: String)
+    fun sendToken(request: SendTokenRequest)
 }

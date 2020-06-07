@@ -10,12 +10,6 @@ class ChatActivityPresenter @Inject constructor(
     private val repository: IRepository
 ) : IChatActivityPresenter() {
 
-    override fun bindView(view: IChatView) {
-        super.bindView(view)
-        runAsync(repository.observeNewMessages(), {
-            view.showMessage(it)
-        })
-    }
 
     override fun sendMessage(message: Message) {
         runAsync(repository.sendMessage(
@@ -23,7 +17,7 @@ class ChatActivityPresenter @Inject constructor(
             message.microchatBO?.id ?: (message.messageBO?.microchatId ?: "")
         ),
             {
-                view?.showMessage(it)
+                //view?.showMessage(it)
             }
             , {
                 view?.showToast("Govno ${it.message}")
@@ -37,5 +31,9 @@ class ChatActivityPresenter @Inject constructor(
         }, {
             Log.i("wtf", "error $it")
         }, true)
+
+        runAsync(repository.observeNewMessages().filter { it.microchatId == microchatId }, {
+            view?.showMessage(it)
+        })
     }
 }
