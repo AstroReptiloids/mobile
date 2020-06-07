@@ -8,6 +8,8 @@ data class MessageDTO(
     val id: String,
     @SerializedName("microchat_id")
     val microchatId: String,
+    @SerializedName("user_id")
+    val userId: String?,
     val user: UserDTO?,
     @SerializedName("reference_id")
     val referenceId: String?,
@@ -47,7 +49,7 @@ data class MessageDTO(
         microchatCount = microchatCount ?: 0,
         peopleCount = peopleCount ?: 0,
         hot = hot ?: 0F,
-        isMy = userId == user?.id,
+        isMy = userId == this.userId,
         createdAt = DateMapper.parseDate(createdAt),
         updatedAt = DateMapper.parseDate(updatedAt)
     )
@@ -56,6 +58,7 @@ data class MessageDTO(
         fun fromBO(messageBO: MessageBO): MessageDTO {
             return MessageDTO(
                 id = messageBO.id,
+                userId = messageBO.user?.id,
                 user = UserDTO.fromBO(messageBO.user),
                 microchatId = messageBO.microchatId,
                 referenceId = messageBO.referenceId,

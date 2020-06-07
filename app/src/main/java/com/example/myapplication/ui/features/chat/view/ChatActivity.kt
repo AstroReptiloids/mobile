@@ -89,7 +89,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
             microcahtBO,
             messageBO.text,
             MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            isBelongsToCurrentUser = true,
+            isBelongsToCurrentUser = messageBO.isMy ?: false,
             isChat = false
         )
         messageAdapter?.add(message)
