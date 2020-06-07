@@ -23,7 +23,10 @@ data class UserDTO(
 
     companion object {
 
-        fun fromBO(userBO: UserBO): UserDTO {
+        fun fromBO(userBO: UserBO?): UserDTO? {
+            if(userBO == null){
+                return null
+            }
             return UserDTO(
                 id = userBO.id,
                 firstName = userBO.firstName,

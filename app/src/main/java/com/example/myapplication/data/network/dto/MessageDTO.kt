@@ -8,7 +8,7 @@ data class MessageDTO(
     val id: String,
     @SerializedName("microchat_id")
     val microchatId: String,
-    val user: UserDTO,
+    val user: UserDTO?,
     @SerializedName("reference_id")
     val referenceId: String?,
     val text: String,
@@ -25,7 +25,7 @@ data class MessageDTO(
     fun toBO(): MessageBO = MessageBO(
         id = id,
         microchatId = microchatId,
-        user = user.toBO(),
+        user = user?.toBO(),
         referenceId = referenceId ?: "",
         text = text,
         isParent = isParent,

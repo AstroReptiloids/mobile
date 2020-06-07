@@ -34,9 +34,9 @@ class ChatListActivity :
         binding.messagesView.adapter = messageAdapter
         messageAdapter?.listener = ChatAdapter.Listener {
             if (!it.isChat) {
-                presenter.createChat(it.text, "", it.parentId, categoryId)
+                presenter.createChat(it.text, "", it.messageBO?.referenceId, categoryId)
             } else {
-                presenter.getChatAndOpen(it.parentId)
+                presenter.getChatAndOpen(it?.microchatBO)
             }
         }
 
@@ -50,8 +50,8 @@ class ChatListActivity :
     override fun showChats(list: List<MicrochatBO>) {
         for (i in list) {
             val message = Message(
-                i.parentId,
-                i.id,
+                null,
+                i,
                 i.title,
                 MemberData(i.creator?.firstName, i.creator?.lastName, getRandomColor()),
                 isBelongsToCurrentUser = false,
@@ -75,50 +75,6 @@ class ChatListActivity :
         startActivity(Intent(this, ChatActivity::class.java).apply {
             putExtra("microchat", chatBO)
         })
-    }
-
-    private fun testInitTestMessage() {
-        val message = Message(
-            "141",
-            "141",
-            "Тема 1",
-            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            isBelongsToCurrentUser = false,
-            isChat = true
-        )
-        runOnUiThread {
-            messageAdapter?.add(message)
-            binding.messagesView.setSelection(binding.messagesView.count - 1)
-        }
-
-        val message1 = Message(
-            "141",
-            "141",
-            "Тема 2",
-            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            false,
-            isChat = true
-        )
-        runOnUiThread {
-            messageAdapter?.add(message1)
-            binding.messagesView.setSelection(binding.messagesView.count - 1)
-        }
-
-        val message3 = Message(
-            "142",
-            "142",
-            "Тема 3",
-            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-            isBelongsToCurrentUser = false,
-            isChat = true
-        )
-        message3.fireCount = 3
-        message3.forkCount = 2
-        message3.peoplesCount = 50
-        runOnUiThread {
-            messageAdapter?.add(message3)
-            binding.messagesView.setSelection(binding.messagesView.count - 1)
-        }
     }
 
     fun createChat(view: View?) {
@@ -316,28 +272,6 @@ class ChatListActivity :
 
     fun onOpenFailure(ex: java.lang.Exception?) {
         System.err.println(ex)
-    }
-
-    // API: get chat
-    fun onMessageReceived(receivedMessage: Message?) {
-        try {
-            val message = receivedMessage?.text?.let {
-                Message(
-                    "146",
-                    "146",
-                    it,
-                    MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
-                    isBelongsToCurrentUser = false,
-                    isChat = true
-                )
-            }
-            runOnUiThread {
-                messageAdapter?.add(message)
-                binding.messagesView.setSelection(binding.messagesView.count - 1)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
     }
 
 }

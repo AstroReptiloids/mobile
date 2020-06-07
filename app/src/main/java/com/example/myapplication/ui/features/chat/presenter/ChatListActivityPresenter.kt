@@ -1,6 +1,8 @@
 package com.example.myapplication.ui.features.chat.presenter
 
 import android.util.Log
+import com.example.myapplication.data.model.MessageBO
+import com.example.myapplication.data.model.MicrochatBO
 import com.example.myapplication.data.network.repository.IRepository
 import javax.inject.Inject
 
@@ -24,20 +26,18 @@ class ChatListActivityPresenter @Inject constructor(
         categoryId: String?
     ) {
         runAsync(repository.createMicrochat(title, description, parentId, categoryId), {
-            view?.showToast("Заебок")
             view?.openCreatedChat(it)
         }, {
-            view?.showToast("Не заебок")
+
         }, true)
     }
 
-    override fun getChatAndOpen(id: String) {
-        runAsync(repository.getMicrochats(id), {
-            view?.showToast("Заебок")
-            view?.openCreatedChat(it.first())
-        }, {
-            view?.showToast("Не заебок")
-        }, true)
+    override fun getChatAndOpen(microchatBO: MicrochatBO?) {
+        if(microchatBO == null){
+            view?.showToast("microchatBO null")
+            return
+        }
+        view?.openCreatedChat(microchatBO)
     }
 
     override fun openChat() {
