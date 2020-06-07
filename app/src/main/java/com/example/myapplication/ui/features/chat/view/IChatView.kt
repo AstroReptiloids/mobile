@@ -5,5 +5,7 @@ import com.example.myapplication.ui.base.view.IView
 
 interface IChatView : IView {
 
-    abstract fun showChats(list: List<MessageBO>)
+    fun showChats(list: List<MessageBO>)
+
+    fun showMessage(messageBO: MessageBO)
 }

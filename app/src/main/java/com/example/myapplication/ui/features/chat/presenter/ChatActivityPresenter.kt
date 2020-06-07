@@ -3,16 +3,32 @@ package com.example.myapplication.ui.features.chat.presenter
 import android.util.Log
 import com.example.myapplication.data.network.repository.IRepository
 import com.example.myapplication.ui.features.chat.data.Message
+import com.example.myapplication.ui.features.chat.view.IChatView
 import javax.inject.Inject
 
 class ChatActivityPresenter @Inject constructor(
     private val repository: IRepository
 ) : IChatActivityPresenter() {
 
+    override fun bindView(view: IChatView) {
+        super.bindView(view)
+        runAsync(repository.observeNewMessages(), {
+            view.showMessage(it)
+        })
+    }
 
     override fun sendMessage(message: Message) {
-// API: send message
+        runAsync(repository.sendMessage(
+            message.text,
+            message.microchatBO?.id ?: (message.messageBO?.microchatId ?: "")
+        ),
+            {
+                view?.showMessage(it)
+            }
+            , {
+                view?.showToast("Govno ${it.message}")
 
+            })
     }
 
     override fun getMessages(microchatId: String) {

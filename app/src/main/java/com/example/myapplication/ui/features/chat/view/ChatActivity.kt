@@ -36,7 +36,7 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
 
       //  testInitTestMessage()
 
-        microcahtBO = (intent.getSerializableExtra("microchat")) as MicrochatBO
+        microcahtBO = (intent.getSerializableExtra("microchat")) as MicrochatBO?
 
         title = microcahtBO?.title ?: "Микрочаты"
 
@@ -70,23 +70,30 @@ class ChatActivity : BaseMvpActivity<ActivityChatBinding, IChatView, IChatActivi
 
 
 
-            /*val message = Message(
-                "130",
-                "130",
+            val message = Message(
+                null,
+                microcahtBO,
                 messageText,
                 MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
                 isBelongsToCurrentUser = true,
                 isChat = false
             )
             presenter.sendMessage(message)
-
-            runOnUiThread {
-                messageAdapter?.add(message)
-                binding.messagesView.setSelection(binding.messagesView.count - 1)
-            }
-
-            binding.editText.text.clear()*/
+            binding.editText.text.clear()
         }
+    }
+
+    override fun showMessage(messageBO: MessageBO) {
+        val message = Message(
+            messageBO,
+            microcahtBO,
+            messageBO.text,
+            MemberData(getRandomName(), getRandomSurname(), getRandomColor()),
+            isBelongsToCurrentUser = true,
+            isChat = false
+        )
+        messageAdapter?.add(message)
+        binding.messagesView.setSelection(binding.messagesView.count - 1)
     }
 
     private fun getRandomSurname(): String? {

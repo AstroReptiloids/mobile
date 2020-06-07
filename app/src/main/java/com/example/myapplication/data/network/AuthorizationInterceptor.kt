@@ -25,6 +25,8 @@ class AuthorizationInterceptor(
             return field
         }
 
+    var userId: String? = null
+
     override fun intercept(chain: Interceptor.Chain): Response {
         if (token == null) {
             return chain.proceed(chain.request())

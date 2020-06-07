@@ -9,3 +9,11 @@ fun SharedPreferences.getToken(): String? {
 fun SharedPreferences.setToken(token: String?) {
     edit().putString("token_", token).apply()
 }
+
+fun SharedPreferences.getUserId(): String? {
+    return getString("userId_", null)
+}
+
+fun SharedPreferences.setUserId(token: String?) {
+    edit().putString("token_", token).apply()
+}
